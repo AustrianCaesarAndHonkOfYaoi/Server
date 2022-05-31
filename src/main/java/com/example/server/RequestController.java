@@ -1,129 +1,147 @@
 package com.example.server;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
 public class RequestController {
 
-    private final int STANDARD_VALUE = 12;
-    /*  Wenns vorhanden ist, dann mach dies
-        nationOptional.ifPresent(userNation -> userNation.setName("Something"));
+  private final int STANDARD_VALUE = 12;
+  /*  Wenns vorhanden ist, dann mach dies
+      nationOptional.ifPresent(userNation -> userNation.setName("Something"));
 
-        Zum Speichern immer zum Schluss
-        repo.save(test);
-    */
-    private final UserNationRepository repo;
+      Zum Speichern immer zum Schluss
+      repo.save(test);
+  */
+  private final UserNationRepository repo;
 
-    @GetMapping("/getAlloy")
-    public ResponseEntity<Integer> getAlloy(int id, String name) {
-        UserNation nation = getNation(id, name);
+  @GetMapping("/getAllInfos")
+  public ResponseEntity<List<UserNation>> getTopScores() {
+    return ResponseEntity.ok(repo.findAll());
+  }
 
-        int alloy = nation.getHighestAmountAlloy();
+  @GetMapping("/getAlloy/{id}/{name}")
+  public ResponseEntity<Integer> getAlloy(@PathVariable int id, @PathVariable String name) {
+    UserNation nation = getNation(id, name);
 
-        return ResponseEntity.ok(alloy);
+    int alloy = nation.getHighestAmountAlloy();
+
+    return ResponseEntity.ok(alloy);
+  }
+
+  @GetMapping("/getFood/{id}/{name}")
+  public ResponseEntity<Integer> getFood(@PathVariable int id, @PathVariable String name) {
+    UserNation nation = getNation(id, name);
+
+    int food = nation.getHighestAmountFood();
+
+    return ResponseEntity.ok(food);
+  }
+
+  @GetMapping("/getYaoi/{id}/{name}")
+  public ResponseEntity<Integer> getYaoi(@PathVariable int id, @PathVariable String name) {
+    UserNation nation = getNation(id, name);
+
+    int yaoi = nation.getHighestAmountYaoi();
+
+    return ResponseEntity.ok(yaoi);
+  }
+
+  @GetMapping("/getMineral/{id}/{name}")
+  public ResponseEntity<Integer> getMineral(@PathVariable int id, @PathVariable String name) {
+    UserNation nation = getNation(id, name);
+
+    int mineral = nation.getHighestAmountMineral();
+
+    return ResponseEntity.ok(mineral);
+  }
+
+  @GetMapping("/getEnergy/{id}/{name}")
+  public ResponseEntity<Integer> getEnergy(@PathVariable int id, @PathVariable String name) {
+    UserNation nation = getNation(id, name);
+
+    int energy = nation.getHighestAmountEnergy();
+
+    return ResponseEntity.ok(energy);
+  }
+
+  @PostMapping("/setEnergy/{id}/{name}/{amount}")
+  public ResponseEntity<Boolean> setEnergy(@PathVariable int id, @PathVariable String name,
+      @PathVariable int amount) {
+
+    UserNation nation = getNation(id, name);
+
+    nation.setHighestAmountEnergy(amount);
+
+    repo.save(nation);
+
+    return ResponseEntity.ok(true);
+  }
+
+
+  @PostMapping("/setMineral/{id}/{name}/{amount}")
+  public ResponseEntity<Boolean> setMineral(@PathVariable int id, @PathVariable String name,
+      @PathVariable int amount) {
+
+    UserNation nation = getNation(id, name);
+    nation.setHighestAmountMineral(amount);
+    repo.save(nation);
+
+    return ResponseEntity.ok(true);
+  }
+
+  @PostMapping("/setAlloy/{id}/{name}/{amount}")
+  public ResponseEntity<Boolean> setAlloy(@PathVariable int id, @PathVariable String name,
+      @PathVariable int amount) {
+
+    UserNation nation = getNation(id, name);
+    nation.setHighestAmountAlloy(amount);
+    repo.save(nation);
+
+    return ResponseEntity.ok(true);
+  }
+
+  @PostMapping("/setYaoi/{id}/{name}/{amount}")
+  public ResponseEntity<Boolean> setYaoi(@PathVariable int id, @PathVariable String name,
+      @PathVariable int amount) {
+
+    UserNation nation = getNation(id, name);
+    nation.setHighestAmountYaoi(amount);
+    repo.save(nation);
+
+    return ResponseEntity.ok(true);
+  }
+
+  @PostMapping("/setFood/{id}/{name}/{amount}")
+  public ResponseEntity<Boolean> setFood(@PathVariable int id, @PathVariable String name,
+      @PathVariable int amount) {
+
+    UserNation nation = getNation(id, name);
+    nation.setHighestAmountFood(amount);
+    repo.save(nation);
+
+    return ResponseEntity.ok(true);
+  }
+
+  private UserNation getNation(Integer id, String name) {
+    Optional<UserNation> nationOptional = repo.getById(id);
+    UserNation nation;
+    if (nationOptional.isEmpty()) {
+      nation = new UserNation(id, name, STANDARD_VALUE, STANDARD_VALUE, STANDARD_VALUE,
+          STANDARD_VALUE, STANDARD_VALUE);
+      repo.save(nation);
+    } else {
+      nation = nationOptional.get();
     }
-    @GetMapping("/getFood")
-    public ResponseEntity<Integer> getFood(int id, String name) {
-        UserNation nation = getNation(id, name);
 
-        int food = nation.getHighestAmountFood();
-
-        return ResponseEntity.ok(food);
-    }
-    @GetMapping("/getYaoi")
-    public ResponseEntity<Integer> getYaoi(int id, String name) {
-        UserNation nation = getNation(id, name);
-
-        int yaoi = nation.getHighestAmountYaoi();
-
-        return ResponseEntity.ok(yaoi);
-    }
-    @GetMapping("/getMineral")
-    public ResponseEntity<Integer> getMineral(int id, String name) {
-        UserNation nation = getNation(id, name);
-
-        int mineral = nation.getHighestAmountMineral();
-
-        return ResponseEntity.ok(mineral);
-    }
-    @GetMapping("/getEnergy")
-    public ResponseEntity<Integer> getEnergy(int id, String name) {
-        UserNation nation = getNation(id, name);
-
-        int energy = nation.getHighestAmountEnergy();
-
-        return ResponseEntity.ok(energy);
-    }
-
-    @PostMapping("/setEnergy")
-    public ResponseEntity<Boolean> setEnergy(Integer id, String name, int amount) {
-
-        UserNation nation = getNation(id, name);
-
-        nation.setHighestAmountEnergy(amount);
-
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("/setMineral")
-    public ResponseEntity<Boolean> setMineral(Integer id, String name, int amount) {
-
-        UserNation nation = getNation(id, name);
-
-        nation.setHighestAmountMineral(amount);
-
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("/setAlloy")
-    public ResponseEntity<Boolean> setAlloy(Integer id, String name, int amount) {
-
-        UserNation nation = getNation(id, name);
-
-        nation.setHighestAmountAlloy(amount);
-
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("/setYaoi")
-    public ResponseEntity<Boolean> setYaoi(Integer id, String name, int amount) {
-
-        UserNation nation = getNation(id, name);
-
-        nation.setHighestAmountYaoi(amount);
-
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("/setFood")
-    public ResponseEntity<Boolean> setFood(Integer id, String name, int amount) {
-
-        UserNation nation = getNation(id, name);
-
-        nation.setHighestAmountFood(amount);
-
-        return ResponseEntity.ok(true);
-    }
-
-    private UserNation getNation(Integer id, String name) {
-        Optional<UserNation> nationOptional = repo.getById(id);
-        UserNation nation;
-        if (nationOptional.isEmpty()) {
-            nation = new UserNation(id, name, STANDARD_VALUE, STANDARD_VALUE, STANDARD_VALUE, STANDARD_VALUE, STANDARD_VALUE);
-            repo.save(nation);
-        } else {
-            nation = nationOptional.get();
-        }
-
-        return nation;
-    }
+    return nation;
+  }
 
 }
