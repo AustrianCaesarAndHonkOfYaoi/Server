@@ -30,6 +30,38 @@ public class RequestController {
 
         return ResponseEntity.ok(alloy);
     }
+    @GetMapping("/getFood")
+    public ResponseEntity<Integer> getFood(int id, String name) {
+        UserNation nation = getNation(id, name);
+
+        int food = nation.getHighestAmountFood();
+
+        return ResponseEntity.ok(food);
+    }
+    @GetMapping("/getYaoi")
+    public ResponseEntity<Integer> getYaoi(int id, String name) {
+        UserNation nation = getNation(id, name);
+
+        int yaoi = nation.getHighestAmountYaoi();
+
+        return ResponseEntity.ok(yaoi);
+    }
+    @GetMapping("/getMineral")
+    public ResponseEntity<Integer> getMineral(int id, String name) {
+        UserNation nation = getNation(id, name);
+
+        int mineral = nation.getHighestAmountMineral();
+
+        return ResponseEntity.ok(mineral);
+    }
+    @GetMapping("/getEnergy")
+    public ResponseEntity<Integer> getEnergy(int id, String name) {
+        UserNation nation = getNation(id, name);
+
+        int energy = nation.getHighestAmountEnergy();
+
+        return ResponseEntity.ok(energy);
+    }
 
     @PostMapping("/setEnergy")
     public ResponseEntity<Boolean> setEnergy(Integer id, String name, int amount) {
